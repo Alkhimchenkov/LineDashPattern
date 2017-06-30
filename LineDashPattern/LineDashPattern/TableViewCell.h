@@ -14,4 +14,5 @@
 @property (strong, nonatomic) IBOutlet UILabel *txtDetail;
 @property (strong, nonatomic) IBOutlet UIView *viewComponent;
 
+
 @end

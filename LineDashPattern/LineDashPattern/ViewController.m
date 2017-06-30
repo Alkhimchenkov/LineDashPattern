@@ -20,11 +20,20 @@
 
 @implementation ViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.backgroundColor = UIColorFromHEX(COLOR_MAIN);
     self.tableArray = [NSArray arrayWithObjects:@"12345",@"54321",@"12345",@"54321",@"12345",@"54321", @"12345",@"54321",@"12345",@"54321",@"12345",@"54321", nil];
 }
+
+- (void)viewDidLayoutSubviews
+{
+    NSLog(@"VIEW bounds: %@", NSStringFromCGRect(self.view.bounds));
+ //   [self.tableView setFrame:self.view.bounds];
+    [self.tableView layoutSubviews];
+}
+
 
 
 #pragma mark - Delegate UITableViewDataSource
@@ -45,21 +54,32 @@
     
     cell.viewComponent.layer.cornerRadius = 10.0f;
     cell.viewComponent.clipsToBounds = YES;
+ 
     
-    cell.imageCell.layer.cornerRadius = 5.0f;
-    cell.imageCell.clipsToBounds = YES;
+ //   cell.imageCell.layer.cornerRadius = 5.0f;
+ //   cell.imageCell.clipsToBounds = YES;
+    
     
     cell.contentView.backgroundColor = UIColorFromHEX(COLOR_MAIN);
+    cell.backgroundColor = UIColorFromHEX(COLOR_MAIN);
     
-    [self removeLayerByName:@"ArroundLayer" view:cell.viewComponent];
-    [cell.viewComponent.layer addSublayer:[self lineDashPattern:cell.viewComponent]];
+    NSLog(@"CELL %d bounds: %@", indexPath.row, NSStringFromCGRect(cell.bounds));
 
+    
+ //   [self removeLayerByName:@"ArroundLayer" view:cell.viewComponent];
+ //   [cell.viewComponent.layer addSublayer:[self lineDashPattern:cell.viewComponent]];
+    
+
+//    UIView *separator = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height - 5.0, cell.contentView.frame.size.width, 5)];
+//    separator.backgroundColor = [UIColor redColor];
+//    [cell addSubview:separator];
+    
+    
     [cell.txtHeader setText:[self.tableArray objectAtIndex:indexPath.row]];
     [cell.imageCell setImage:[UIImage imageNamed:[self randomNameImage]]];
     [cell.txtDetail setText:[self.tableArray objectAtIndex:indexPath.row]];
-    
-    
-    [cell setNeedsLayout];
+//
+//    [cell setNeedsLayout];
     
     return cell;
 }
@@ -74,18 +94,56 @@
 
 }
 
-
 -(CAShapeLayer*)lineDashPattern:(UIView*)cellView{
+    
+    
+//    CAShapeLayer *shapelayer = [CAShapeLayer layer];
+//    UIBezierPath *path = [UIBezierPath bezierPath];
+//    //draw a line
+//    [path moveToPoint:CGPointMake(0.0, cell.frame.size.height)]; //add yourStartPoint here
+//    [path addLineToPoint:CGPointMake(cell.frame.size.width, cell.frame.size.height)];// add yourEndPoint here
+//    UIColor *fill = [UIColor colorWithRed:0.80f green:0.80f blue:0.80f alpha:1.00f];
+//    shapelayer.strokeStart = 0.0;
+//    shapelayer.strokeColor = fill.CGColor;
+//    shapelayer.lineWidth = 1.0;
+//    shapelayer.lineJoin = kCALineJoinRound;
+//    shapelayer.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInt:1],[NSNumber numberWithInt:3 ], nil];
+//    //    shapelayer.lineDashPhase = 3.0f;
+//    shapelayer.path = path.CGPath;
+    
+    
     
     CAShapeLayer *border = [CAShapeLayer layer];
     border.name = @"ArroundLayer";
-    border.fillColor = nil;
-    border.path = [UIBezierPath bezierPathWithRoundedRect:cellView.bounds cornerRadius:10.0].CGPath;
-    border.frame = cellView.bounds;
+    border.fillColor = [UIColor clearColor].CGColor;
     
     border.strokeColor = UIColorFromHEX(COLOR_MAIN).CGColor;
+//    border.strokeStart = 0.0;
     border.lineWidth = 4;
-    border.lineDashPattern = @[@15];
+    border.lineJoin=kCALineJoinRound;
+    border.frame = cellView.bounds;
+    border.lineDashPattern = @[@8];
+    
+    UIBezierPath *path = [UIBezierPath bezierPath];
+
+    [path moveToPoint:CGPointMake(0.0, 0.0)]; //add yourStartPoint here
+    [path addLineToPoint:CGPointMake(cellView.frame.size.width, 0.0)];// add yourEndPoint here
+
+    [path moveToPoint:CGPointMake(0.0, cellView.frame.size.height)]; //add yourStartPoint here
+    [path addLineToPoint:CGPointMake(cellView.frame.size.width, cellView.frame.size.height)];// add yourEndPoint here
+
+    [path moveToPoint:CGPointMake(0.0, 0.0)]; //add yourStartPoint here
+    [path addLineToPoint:CGPointMake(0.0, cellView.frame.size.height)];// add yourEndPoint here
+
+    [path moveToPoint:CGPointMake(cellView.frame.size.width, 0.0)]; //add yourStartPoint here
+    [path addLineToPoint:CGPointMake(cellView.frame.size.width, cellView.frame.size.height)];// add yourEndPoint here
+    
+
+ //   path = [UIBezierPath bezierPathWithRoundedRect:cellView.bounds cornerRadius:5.0];
+    
+    border.path = path.CGPath;
+    
+  //  border.path = [UIBezierPath bezierPathWithRoundedRect:cellView.bounds cornerRadius:10.0].CGPath;
     
     return border;
 }
